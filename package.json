@@ -7,9 +7,17 @@
   "author": "wacii",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
+    "next": "^4.2.2",
     "pg": "^7.4.1",
     "pg-hstore": "^2.3.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "sequelize": "^4.31.0"
   }
 }
