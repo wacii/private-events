@@ -1,0 +1,10 @@
+{
+  "name": "private-events",
+  "version": "0.0.0",
+  "description": "App to manage private events.",
+  "main": "index.js",
+  "repository": "https://github.com/wacii/private-events",
+  "author": "wacii",
+  "license": "MIT",
+  "private": true
+}
