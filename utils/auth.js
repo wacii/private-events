@@ -1,4 +1,5 @@
 import auth0 from "auth0-js";
+import Cookie from "js-cookie";
 
 const auth = new auth0.WebAuth({
   domain: "wacii.auth0.com",
@@ -20,6 +21,9 @@ const setSession = ({ accessToken, expiresIn, idToken }) => {
   localStorage.setItem("expires_at", expiresAt);
   localStorage.setItem("id_token", idToken);
 
+  Cookie.set("access_token", accessToken);
+  Cookie.set("id_token", idToken);
+
   scheduleRenewal();
   broadcastAuthenticated(true);
 };
@@ -28,22 +32,30 @@ const clearSession = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("expires_at");
   localStorage.removeItem("id_token");
+
+  Cookie.remove("access_token");
+  Cookie.remove("id_token");
 }
 
 const logout = () => {
   clearSession();
-  window.clearTimeout(renewalTimeout);
+  clearTimeout(renewalTimeout);
   broadcastAuthenticated(false);
 };
 
-const isAuthenticated = () => {
-  const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-  return new Date().getTime() < expiresAt;
+const containsIdToken = /id_token/;
+const isAuthenticated = (isServer, cookie) => {
+  if (isServer) {
+    return containsIdToken.test(cookie);
+  } else {
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    return new Date().getTime() < expiresAt;
+  }
 }
 
 const listeners = [];
-const subscribeAuthenticated = listener => {
-  listener(isAuthenticated());
+const subscribeAuthenticated = (isServer, cookie, listener) => {
+  listener(isAuthenticated(isServer, cookie));
   listeners.push(listener);
   return () => listeners.splice(listeners.indexOf(listener), 1);
 }

@@ -1,6 +1,7 @@
 import React from "react";
 
 import Authentication from "../components/Authentication";
+import withAuthenticated from "../utils/withAuthenticated";
 
 class IndexComponent extends React.Component {
   render() {
@@ -8,4 +9,4 @@ class IndexComponent extends React.Component {
   }
 }
 
-export default IndexComponent;
+export default withAuthenticated(IndexComponent);
