@@ -13,6 +13,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "auth0-js": "^9.0.2",
     "next": "^4.2.2",
     "pg": "^7.4.1",
     "pg-hstore": "^2.3.2",

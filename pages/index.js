@@ -1,3 +1,11 @@
 import React from "react";
 
-export default () => <div>TODO</div>;
+import Authentication from "../components/Authentication";
+
+class IndexComponent extends React.Component {
+  render() {
+    return <Authentication />;
+  }
+}
+
+export default IndexComponent;
