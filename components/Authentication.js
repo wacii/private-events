@@ -1,6 +1,6 @@
 import React from "react";
 
-import { isAuthenticated, login, logout } from "../utils/auth";
+import { subscribeAuthenticated, login, logout } from "../utils/auth";
 
 class Authentication extends React.Component {
   state = {
@@ -9,10 +9,14 @@ class Authentication extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({
-      loading: false,
-      authenticated: isAuthenticated()
+    this.setState({ loading: false });
+    this.unsubscribe = subscribeAuthenticated(authenticated => {
+      this.setState({ authenticated: authenticated });
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   render() {

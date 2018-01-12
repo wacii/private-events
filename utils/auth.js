@@ -22,6 +22,7 @@ const setSession = ({ accessToken, expiresIn, idToken }) => {
   localStorage.setItem("id_token", idToken);
 
   scheduleRenewal();
+  broadcastAuthenticated(true);
 };
 
 const clearSession = () => {
@@ -33,12 +34,23 @@ const clearSession = () => {
 const logout = () => {
   clearSession();
   window.clearTimeout(renewalTimeout);
+  broadcastAuthenticated(false);
 };
 
 const isAuthenticated = () => {
   const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
   return new Date().getTime() < expiresAt;
 }
+
+const listeners = [];
+const subscribeAuthenticated = listener => {
+  listener(isAuthenticated());
+  listeners.push(listener);
+  return () => listeners.splice(listeners.indexOf(listener), 1);
+}
+const broadcastAuthenticated = (authenticated) => {
+  listeners.forEach(listener => listener(authenticated));
+};
 
 const renewToken = () => {
   auth.checkSession({}, (err, result) => {
@@ -53,7 +65,7 @@ const renewToken = () => {
 let renewalTimeout;
 const scheduleRenewal = () => {
   if (!process.browser) return;
-  
+
   const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
   const delay = expiresAt - Date.now();
   if (delay > 0) {
@@ -65,6 +77,7 @@ scheduleRenewal();
 
 export {
   isAuthenticated,
+  subscribeAuthenticated,
   login,
   logout,
   setSession,
