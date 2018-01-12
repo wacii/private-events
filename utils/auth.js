@@ -10,7 +10,6 @@ const auth = new auth0.WebAuth({
 });
 
 const login = () => auth.authorize();
-const parseHash = auth.parseHash.bind(auth);
 
 const setSession = ({ accessToken, expiresIn, idToken }) => {
   const expiresAt = JSON.stringify(
@@ -52,6 +51,16 @@ const broadcastAuthenticated = (authenticated) => {
   listeners.forEach(listener => listener(authenticated));
 };
 
+const handleAuthentication = () => {
+  auth.parseHash((err, result) => {
+    if (err) {
+      console.error(err);
+    } else {
+      setSession(result);
+    }
+  });
+};
+
 const renewToken = () => {
   auth.checkSession({}, (err, result) => {
     if (err) {
@@ -60,7 +69,7 @@ const renewToken = () => {
       setSession(result);
     }
   })
-}
+};
 
 let renewalTimeout;
 const scheduleRenewal = () => {
@@ -71,7 +80,7 @@ const scheduleRenewal = () => {
   if (delay > 0) {
     renewalTimeout = setTimeout(renewToken, delay)
   }
-}
+};
 
 scheduleRenewal();
 
@@ -82,5 +91,5 @@ export {
   logout,
   setSession,
   clearSession,
-  parseHash
+  handleAuthentication
 };

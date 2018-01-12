@@ -1,20 +1,13 @@
 import React from "react";
 import { withRouter } from "next/router";
 
-import { parseHash, setSession } from "../utils/auth";
+import { handleAuthentication } from "../utils/auth";
 
 class Callback extends React.Component {
   componentDidMount() {
     const { router } = this.props;
-    
-    parseHash((err, result) => {
-      if (err) {
-        console.error(err);
-      } else {
-        setSession(result);
-      }
-      router.push("/");
-    });
+    handleAuthentication();
+    router.push("/");
   }
 
   render() {
