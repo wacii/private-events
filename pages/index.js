@@ -1,6 +1,7 @@
 import React from "react";
 
 import Authentication from "../components/Authentication";
+import withApollo from "../utils/withApollo";
 import withAuthenticated from "../utils/withAuthenticated";
 
 class IndexComponent extends React.Component {
@@ -9,4 +10,4 @@ class IndexComponent extends React.Component {
   }
 }
 
-export default withAuthenticated(IndexComponent);
+export default withApollo(withAuthenticated(IndexComponent));
