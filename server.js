@@ -1,4 +1,5 @@
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const { graphqlExpress, graphiqlExpress } = require("apollo-server-express");
 const next = require("next");
@@ -13,6 +14,8 @@ const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = express();
+
+  server.use(cookieParser());
 
   server.use("/graphql", bodyParser.json(), graphqlExpress({ schema }));
   server.get("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));

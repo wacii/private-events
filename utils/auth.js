@@ -43,19 +43,18 @@ const logout = () => {
   broadcastAuthenticated(false);
 };
 
-const containsIdToken = /id_token/;
-const isAuthenticated = (isServer, cookie) => {
+const isAuthenticated = (isServer, cookies) => {
   if (isServer) {
-    return containsIdToken.test(cookie);
+    return cookies.id_token !== undefined;
   } else {
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
     return new Date().getTime() < expiresAt;
   }
 }
 
 const listeners = [];
-const subscribeAuthenticated = (isServer, cookie, listener) => {
-  listener(isAuthenticated(isServer, cookie));
+const subscribeAuthenticated = (isServer, cookies, listener) => {
+  listener(isAuthenticated(isServer, cookies));
   listeners.push(listener);
   return () => listeners.splice(listeners.indexOf(listener), 1);
 }
@@ -87,7 +86,7 @@ let renewalTimeout;
 const scheduleRenewal = () => {
   if (!process.browser) return;
 
-  const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+  const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
   const delay = expiresAt - Date.now();
   if (delay > 0) {
     renewalTimeout = setTimeout(renewToken, delay)

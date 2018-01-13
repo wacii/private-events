@@ -11,7 +11,7 @@ const withAuthenticated = Page =>
       return {
         ...props,
         isServer: !!ctx.req,
-        cookie: ctx.req && ctx.req.headers.cookie
+        cookie: ctx.req && ctx.req.cookies
       };
     };
 
