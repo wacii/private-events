@@ -5,7 +5,7 @@ const auth = new auth0.WebAuth({
   domain: "wacii.auth0.com",
   clientID: "4e93O3ZuNbpVxvnc90dj6ht4KEU5yErT",
   redirectUri: "http://localhost:3000/callback",
-  audience: "https://wacii.auth0.com/userinfo",
+  audience: "http://localhost:3000",
   responseType: "token id_token",
   scope: "openid"
 });

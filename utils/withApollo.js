@@ -1,7 +1,8 @@
 import React from "react";
 import { ApolloClient } from "apollo-client";
 import { ApolloProvider, getDataFromTree } from "react-apollo";
-import Head from 'next/head'
+import Head from "next/head"
+import { setContext } from "apollo-link-context";
 import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { SchemaLink } from "apollo-link-schema";
@@ -11,11 +12,22 @@ import schema from "../schema";
 const CLIENT_KEY = "with-apollo/client";
 const isServer = !process.browser;
 
-const createBrowserClient = (initialState = {}) =>
-  new ApolloClient({
-    cache: new InMemoryCache().restore(initialState),
-    link: new HttpLink()
+const createBrowserClient = (initialState = {}) => {
+  const authLink = setContext((_, { headers }) => {
+    const token = localStorage.getItem("access_token");
+    return {
+      headers: {
+        ...headers,
+        Authorization: token ? `Bearer ${token}` : null
+      }
+    };
   });
+
+  return new ApolloClient({
+    cache: new InMemoryCache().restore(initialState),
+    link: authLink.concat(new HttpLink())
+  });
+};
 
 const createServerClient = (initialState = {}) =>
   new ApolloClient({
