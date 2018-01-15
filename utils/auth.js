@@ -21,7 +21,6 @@ const setSession = ({ accessToken, expiresIn, idToken }) => {
   localStorage.setItem("expires_at", expiresAt);
   localStorage.setItem("id_token", idToken);
 
-  Cookie.set("access_token", accessToken);
   Cookie.set("id_token", idToken);
 
   scheduleRenewal();
@@ -33,7 +32,6 @@ const clearSession = () => {
   localStorage.removeItem("expires_at");
   localStorage.removeItem("id_token");
 
-  Cookie.remove("access_token");
   Cookie.remove("id_token");
 }
 
