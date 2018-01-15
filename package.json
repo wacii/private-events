@@ -38,5 +38,8 @@
     "react-apollo": "^2.0.4",
     "react-dom": "^16.2.0",
     "sequelize": "^4.31.0"
+  },
+  "browser": {
+    "./schema.js": false
   }
 }

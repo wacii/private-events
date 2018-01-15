@@ -7,8 +7,6 @@ import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { SchemaLink } from "apollo-link-schema";
 
-import schema from "../schema";
-
 const CLIENT_KEY = "with-apollo/client";
 const isServer = !process.browser;
 
@@ -33,7 +31,7 @@ const createServerClient = (initialState = {}) =>
   new ApolloClient({
     cache: new InMemoryCache().restore(initialState),
     connectToDevTools: false,
-    link: new SchemaLink({ schema }),
+    link: new SchemaLink({ schema: global.schema }),
     ssrMode: true
   });
 
