@@ -10,8 +10,7 @@ const withAuthenticated = Page =>
       const props = await Page.getInitialProps && Page.getInitialProps(ctx);
       return {
         ...props,
-        isServer: !!ctx.req,
-        cookie: ctx.req && ctx.req.cookies
+        cookie: ctx.req ? ctx.req.cookies : null
       };
     };
 
@@ -27,7 +26,7 @@ const withAuthenticated = Page =>
     
     componentDidMount() {
       this.unsubscribe = subscribeAuthenticated(
-        this.props.isServer,
+        typeof window === "undefined",
         this.props.cookie,
         authenticated => {
           this.setState({ authenticated: authenticated });
