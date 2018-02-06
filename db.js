@@ -4,8 +4,9 @@ const sequelize = new Sequelize(
   "wacii",
   "password",
   {
+    dialect: "postgres",
     host: "localhost",
-    dialect: "postgres"
+    operatorsAliases: false
   }
 );
 
