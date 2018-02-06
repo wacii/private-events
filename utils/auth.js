@@ -1,6 +1,11 @@
 import auth0 from "auth0-js";
 import Cookie from "js-cookie";
 
+const PREFIX = "private_events/";
+export const ACCESS_TOKEN = `${PREFIX}access_token`;
+export const EXPIRES_AT = `${PREFIX}expires_at`;
+export const ID_TOKEN = `${PREFIX}id_token`;
+
 const auth = new auth0.WebAuth({
   domain: "wacii.auth0.com",
   clientID: "4e93O3ZuNbpVxvnc90dj6ht4KEU5yErT",
@@ -17,22 +22,22 @@ const setSession = ({ accessToken, expiresIn, idToken }) => {
     expiresIn * 1000 + new Date().getTime()
   );
 
-  localStorage.setItem("access_token", accessToken);
-  localStorage.setItem("expires_at", expiresAt);
-  localStorage.setItem("id_token", idToken);
+  localStorage.setItem(ACCESS_TOKEN, accessToken);
+  localStorage.setItem(EXPIRES_AT, expiresAt);
+  localStorage.setItem(ID_TOKEN, idToken);
 
-  Cookie.set("id_token", idToken);
+  Cookie.set(ID_TOKEN, idToken);
 
   scheduleRenewal();
   broadcastAuthenticated(true);
 };
 
 const clearSession = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("expires_at");
-  localStorage.removeItem("id_token");
+  localStorage.removeItem(ACCESS_TOKEN);
+  localStorage.removeItem(EXPIRES_AT);
+  localStorage.removeItem(ID_TOKEN);
 
-  Cookie.remove("id_token");
+  Cookie.remove(ID_TOKEN);
 }
 
 const logout = () => {
@@ -45,7 +50,7 @@ const isAuthenticated = (isServer, cookies) => {
   if (isServer) {
     return cookies.id_token !== undefined;
   } else {
-    const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
+    const expiresAt = JSON.parse(localStorage.getItem(EXPIRES_AT));
     return new Date().getTime() < expiresAt;
   }
 }
@@ -84,7 +89,7 @@ let renewalTimeout;
 const scheduleRenewal = () => {
   if (!process.browser) return;
 
-  const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
+  const expiresAt = JSON.parse(localStorage.getItem(EXPIRES_AT));
   const delay = expiresAt - Date.now();
   if (delay > 0) {
     renewalTimeout = setTimeout(renewToken, delay)

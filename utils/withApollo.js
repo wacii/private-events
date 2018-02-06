@@ -7,12 +7,14 @@ import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { SchemaLink } from "apollo-link-schema";
 
+import { ACCESS_TOKEN } from "./auth";
+
 const CLIENT_KEY = "with-apollo/client";
 const isServer = !process.browser;
 
 const createBrowserClient = (initialState = {}) => {
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem(ACCESS_TOKEN);
     return {
       headers: {
         ...headers,
