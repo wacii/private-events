@@ -8,7 +8,7 @@ const withAuthenticated = Page =>
   class WithAuthenticated extends React.Component {
     static getInitialProps = async ctx => {
       const props = Page.getInitialProps ? await Page.getInitialProps(ctx) : {};
-      
+
       return {
         cookies: ctx.req ? ctx.req.cookies : null
       };
@@ -26,15 +26,15 @@ const withAuthenticated = Page =>
 
     constructor(props) {
       super(props);
-      const authenticated = typeof window === "undefined" ?
-        props.cookies.id_token !== undefined :
-        localStorage.getItem(ID_TOKEN) !== null;
+      const authenticated = process.browser ?
+        localStorage.getItem(ID_TOKEN) !== null :
+        props.cookies.id_token !== undefined;
       this.state = { authenticated };
     }
     
     componentDidMount() {
       this.unsubscribe = subscribeAuthenticated(
-        typeof window === "undefined",
+        process.browser,
         this.props.cookies,
         authenticated => {
           this.setState({ authenticated: authenticated });
