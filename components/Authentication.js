@@ -5,14 +5,19 @@ import { login, logout } from "../utils/auth";
 
 class Authentication extends React.Component {
   static contextTypes = {
-    authenticated: PropTypes.bool
+    authenticated: PropTypes.bool,
+    client: PropTypes.object.isRequired
   }
 
   render() {
-    const { authenticated } = this.context;
+    const { authenticated, client } = this.context;
+    const logoutAndReset = () => {
+      logout();
+      client.resetStore();
+    };
 
     return authenticated ? (
-      <button onClick={logout}>Logout</button>
+      <button onClick={logoutAndReset}>Logout</button>
     ) : (
       <button onClick={login}>Login</button>
     );
