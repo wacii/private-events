@@ -1,16 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { subscribeAuthenticated } from "./auth";
+import { ID_TOKEN, subscribeAuthenticated } from "./auth";
 
 // TODO: store in apollo instead of context
 const withAuthenticated = Page =>
   class WithAuthenticated extends React.Component {
     static getInitialProps = async ctx => {
-      const props = await Page.getInitialProps && Page.getInitialProps(ctx);
+      const props = Page.getInitialProps ? await Page.getInitialProps(ctx) : {};
+      
       return {
-        ...props,
-        cookie: ctx.req ? ctx.req.cookies : null
+        cookies: ctx.req ? ctx.req.cookies : null
       };
     };
 
@@ -23,11 +23,19 @@ const withAuthenticated = Page =>
     }
 
     state = { authenticated: false };
+
+    constructor(props) {
+      super(props);
+      const authenticated = typeof window === "undefined" ?
+        props.cookies.id_token !== undefined :
+        localStorage.getItem(ID_TOKEN) !== null;
+      this.state = { authenticated };
+    }
     
     componentDidMount() {
       this.unsubscribe = subscribeAuthenticated(
         typeof window === "undefined",
-        this.props.cookie,
+        this.props.cookies,
         authenticated => {
           this.setState({ authenticated: authenticated });
         }
