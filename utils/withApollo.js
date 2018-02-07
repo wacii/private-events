@@ -47,7 +47,7 @@ const withApollo = Page =>
         try {
           await getDataFromTree(
             <ApolloProvider client={client}>
-              <Page props={props} />
+              <Page {...props} />
             </ApolloProvider>
           );
         } catch (error) { 
